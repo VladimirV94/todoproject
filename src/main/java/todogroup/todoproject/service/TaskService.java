@@ -1,5 +1,6 @@
 package todogroup.todoproject.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import todogroup.todoproject.dao.TaskRepository;
@@ -31,16 +32,19 @@ public class TaskService implements ITaskService {
 	}
 
 	@Override
+	@Transactional
 	public TaskContainerDTO updateTask(Task task) {
 		return new TaskContainerDTO(repository.save(task));
 	}
 
 	@Override
+	@Transactional
 	public TaskContainerDTO saveTask(Task task) {
 		return new TaskContainerDTO(repository.save(task));
 	}
 
 	@Override
+	@Transactional
 	public void deleteTaskById(int id) {
 		repository.deleteById(id);
 	}

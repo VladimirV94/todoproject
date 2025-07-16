@@ -33,19 +33,16 @@ public class TaskController {
 	}
 
 	@PutMapping("update_task")
-	@Transactional
 	public TaskContainerDTO updateTask(@RequestBody Task task) {
 		return taskService.updateTask(task);
 	}
 
 	@PostMapping("save_task")
-	@Transactional
 	public TaskContainerDTO saveTask(@RequestBody Task task) {
 		return taskService.saveTask(task);
 	}
 
 	@PostMapping("delete_task/{id}")
-	@Transactional
 	public void deleteTask(@PathVariable String id) {
 		if(isNumeric(id))
 			taskService.deleteTaskById(Integer.parseInt(id));
