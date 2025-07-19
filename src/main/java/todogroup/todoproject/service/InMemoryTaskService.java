@@ -3,9 +3,11 @@ package todogroup.todoproject.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import todogroup.todoproject.dao.InMemoryTaskDAO;
+import todogroup.todoproject.dto.TaskMapper;
+import todogroup.todoproject.dto.TaskRequestDTO;
+import todogroup.todoproject.dto.TaskResponseDTO;
 import todogroup.todoproject.entity.Task;
 import todogroup.todoproject.entity.TaskStatus;
-import todogroup.todoproject.entity.dto.TaskContainerDTO;
 import todogroup.todoproject.service.sorting.SortDirection;
 import todogroup.todoproject.service.sorting.SortingService;
 
@@ -20,23 +22,23 @@ public class InMemoryTaskService implements ITaskService {
 
 	private InMemoryTaskDAO repository;
 
-	public TaskContainerDTO findAllTasks() {
-		return new TaskContainerDTO(repository.findAllTasks());
+	public List<TaskResponseDTO> findAllTasks() {
+		return TaskMapper.INSTANCE.toDTO(repository.findAllTasks());
 	}
 
 	@Override
-	public TaskContainerDTO findTaskById(int id) {
-		return new TaskContainerDTO(repository.findTaskById(id));
+	public Optional<TaskResponseDTO> findTaskById(int id) {
+		return TaskMapper.INSTANCE.toDTO(repository.findTaskById(id));
 	}
 
 	@Override
-	public TaskContainerDTO updateTask(Task task) {
-		return new TaskContainerDTO(repository.updateTask(task));
+	public Optional<TaskResponseDTO> updateTask(Task task) {
+		return TaskMapper.INSTANCE.toDTO(repository.saveTask(task));
 	}
 
 	@Override
-	public TaskContainerDTO saveTask(Task task) {
-		return new TaskContainerDTO(repository.saveTask(task));
+	public Optional<TaskResponseDTO> saveTask(Task task) {
+		return TaskMapper.INSTANCE.toDTO(repository.saveTask(task));
 	}
 
 	@Override
@@ -45,32 +47,32 @@ public class InMemoryTaskService implements ITaskService {
 	}
 
 	@Override
-	public TaskContainerDTO findTasksByStatus(TaskStatus status) {
-		return new TaskContainerDTO(repository.findAllTasks().stream()
+	public List<TaskResponseDTO> findTasksByStatus(TaskStatus status) {
+		return TaskMapper.INSTANCE.toDTO(repository.findAllTasks().stream()
 			.filter(task -> task.getStatus() == status)
 			.toList());
 	}
 
+//	@Override
+//	public List<TaskResponseDTO> sortTasksByStatus(Collection<Integer> tasksId, SortDirection sortDirection) {
+//		var tasks = findTaskByIds(tasksId);
+//		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByStatus(tasks, sortDirection));
+//	}
+//
+//	@Override
+//	public List<TaskResponseDTO> sortTasksByDeadline(Collection<Integer> tasksId, SortDirection sortDirection) {
+//		var tasks = findTaskByIds(tasksId);
+//		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByDeadline(tasks, sortDirection));
+//	}
+
 	@Override
-	public TaskContainerDTO sortTasksByStatus(Collection<Integer> tasksId, SortDirection sortDirection) {
-		var tasks = findTaskByIds(tasksId);
-		return new TaskContainerDTO(SortingService.sortTasksByStatus(tasks, sortDirection));
+	public List<TaskResponseDTO> sortAllTasksByStatus(SortDirection sortDirection) {
+		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByStatus(repository.findAllTasks(), sortDirection));
 	}
 
 	@Override
-	public TaskContainerDTO sortTasksByDeadline(Collection<Integer> tasksId, SortDirection sortDirection) {
-		var tasks = findTaskByIds(tasksId);
-		return new TaskContainerDTO(SortingService.sortTasksByDeadline(tasks, sortDirection));
-	}
-
-	@Override
-	public TaskContainerDTO sortAllTasksByStatus(SortDirection sortDirection) {
-		return new TaskContainerDTO(SortingService.sortTasksByStatus(repository.findAllTasks(), sortDirection));
-	}
-
-	@Override
-	public TaskContainerDTO sortAllTasksByDeadline(SortDirection sortDirection) {
-		return new TaskContainerDTO(SortingService.sortTasksByDeadline(repository.findAllTasks(), sortDirection));
+	public List<TaskResponseDTO> sortAllTasksByDeadline(SortDirection sortDirection) {
+		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByDeadline(repository.findAllTasks(), sortDirection));
 	}
 
 	private List<Task> findTaskByIds(Collection<Integer> tasksId) {

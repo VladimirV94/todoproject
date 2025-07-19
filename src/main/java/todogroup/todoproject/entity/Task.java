@@ -5,13 +5,14 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-@Builder
-@AllArgsConstructor
-@Getter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
 @Table(name = "tasks")
 public class Task {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -19,9 +20,8 @@ public class Task {
     private String name;
     @Column(name = "description")
     private String description;
-    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private TaskStatus status;
     @Column(name = "deadline")
     private LocalDate deadline;
-
 }

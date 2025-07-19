@@ -1,31 +1,34 @@
 package todogroup.todoproject.service;
 
+import todogroup.todoproject.dto.TaskRequestDTO;
+import todogroup.todoproject.dto.TaskResponseDTO;
 import todogroup.todoproject.entity.Task;
 import todogroup.todoproject.entity.TaskStatus;
-import todogroup.todoproject.entity.dto.TaskContainerDTO;
 import todogroup.todoproject.service.sorting.SortDirection;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 public interface ITaskService {
 
-	TaskContainerDTO findAllTasks();
+	List<TaskResponseDTO> findAllTasks();
 
-	TaskContainerDTO findTaskById(int id);
+	Optional<TaskResponseDTO> findTaskById(int id);
 
-	TaskContainerDTO updateTask(Task task);
+	Optional<TaskResponseDTO> updateTask(Task task);
 
-	TaskContainerDTO saveTask(Task task);
+	Optional<TaskResponseDTO> saveTask(Task task);
 
 	void deleteTaskById(int id);
 
-	TaskContainerDTO findTasksByStatus(TaskStatus status);
+	List<TaskResponseDTO> findTasksByStatus(TaskStatus status);
 
-	TaskContainerDTO sortTasksByStatus(Collection<Integer> tasksId, SortDirection SortDirection);
+//	List<TaskResponseDTO> sortTasksByStatus(Collection<Integer> tasksId, SortDirection SortDirection);
+//
+//	List<TaskResponseDTO> sortTasksByDeadline(Collection<Integer> tasksId, SortDirection SortDirection);
 
-	TaskContainerDTO sortTasksByDeadline(Collection<Integer> tasksId, SortDirection SortDirection);
+	List<TaskResponseDTO> sortAllTasksByStatus(SortDirection sortDirection);
 
-	TaskContainerDTO sortAllTasksByStatus(SortDirection sortDirection);
-
-	TaskContainerDTO sortAllTasksByDeadline(SortDirection sortDirection);
+	List<TaskResponseDTO> sortAllTasksByDeadline(SortDirection sortDirection);
 }

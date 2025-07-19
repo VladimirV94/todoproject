@@ -4,9 +4,11 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import todogroup.todoproject.dao.TaskRepository;
+import todogroup.todoproject.dto.TaskMapper;
+import todogroup.todoproject.dto.TaskRequestDTO;
+import todogroup.todoproject.dto.TaskResponseDTO;
 import todogroup.todoproject.entity.Task;
 import todogroup.todoproject.entity.TaskStatus;
-import todogroup.todoproject.entity.dto.TaskContainerDTO;
 import todogroup.todoproject.service.sorting.SortDirection;
 import todogroup.todoproject.service.sorting.SortingService;
 
@@ -22,25 +24,25 @@ public class TaskService implements ITaskService {
 
 	private TaskRepository repository;
 
-	public TaskContainerDTO findAllTasks() {
-		return new TaskContainerDTO(repository.findAll());
+	public List<TaskResponseDTO> findAllTasks() {
+		return  TaskMapper.INSTANCE.toDTO(repository.findAll());
 	}
 
 	@Override
-	public TaskContainerDTO findTaskById(int id) {
-		return new TaskContainerDTO(repository.findById(id));
-	}
-
-	@Override
-	@Transactional
-	public TaskContainerDTO updateTask(Task task) {
-		return new TaskContainerDTO(repository.save(task));
+	public Optional<TaskResponseDTO> findTaskById(int id) {
+		return TaskMapper.INSTANCE.toDTO(repository.findById(id));
 	}
 
 	@Override
 	@Transactional
-	public TaskContainerDTO saveTask(Task task) {
-		return new TaskContainerDTO(repository.save(task));
+	public Optional<TaskResponseDTO> updateTask(Task task) {
+		return TaskMapper.INSTANCE.toDTO(repository.save(task));
+	}
+
+	@Override
+	@Transactional
+	public Optional<TaskResponseDTO> saveTask(Task task) {
+		return TaskMapper.INSTANCE.toDTO(repository.save(task));
 	}
 
 	@Override
@@ -50,40 +52,31 @@ public class TaskService implements ITaskService {
 	}
 
 	@Override
-	public TaskContainerDTO findTasksByStatus(TaskStatus status) {
-		return new TaskContainerDTO(repository.findAll().stream()
-				.filter(task -> task.getStatus() == status)
+	public List<TaskResponseDTO> findTasksByStatus(TaskStatus status) {
+		return TaskMapper.INSTANCE.toDTO(repository.findAll().stream()
+				.filter(task -> status == task.getStatus())
 				.toList());
 	}
 
+//	@Override
+//	public List<TaskResponseDTO> sortTasksByStatus(Collection<Integer> tasksId, SortDirection sortDirection) {
+//		var tasks = repository.findAllById(tasksId);
+//		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByStatus(tasks, sortDirection));
+//	}
+//
+//	@Override
+//	public List<TaskResponseDTO> sortTasksByDeadline(Collection<Integer> tasksId, SortDirection sortDirection) {
+//		var tasks = repository.findAllById(tasksId);
+//		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByDeadline(tasks, sortDirection));
+//	}
+
 	@Override
-	public TaskContainerDTO sortTasksByStatus(Collection<Integer> tasksId, SortDirection sortDirection) {
-		var tasks = findTaskByIds(tasksId);
-		return new TaskContainerDTO(SortingService.sortTasksByStatus(tasks, sortDirection));
+	public List<TaskResponseDTO> sortAllTasksByStatus(SortDirection sortDirection) {
+		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByStatus(repository.findAll(), sortDirection));
 	}
 
 	@Override
-	public TaskContainerDTO sortTasksByDeadline(Collection<Integer> tasksId, SortDirection sortDirection) {
-		var tasks = findTaskByIds(tasksId);
-		return new TaskContainerDTO(SortingService.sortTasksByDeadline(tasks, sortDirection));
-	}
-
-	@Override
-	public TaskContainerDTO sortAllTasksByStatus(SortDirection sortDirection) {
-		return new TaskContainerDTO(SortingService.sortTasksByStatus(repository.findAll(), sortDirection));
-	}
-
-	@Override
-	public TaskContainerDTO sortAllTasksByDeadline(SortDirection sortDirection) {
-		return new TaskContainerDTO(SortingService.sortTasksByDeadline(repository.findAll(), sortDirection));
-	}
-
-	private List<Task> findTaskByIds(Collection<Integer> tasksId) {
-		return new HashSet<>(tasksId) // убираем дубликаты
-				.stream()
-				.map(taskId -> repository.findById(taskId))
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-				.collect(Collectors.toList());// обратно возвращаем модифицируемый лист для возможности сортировки
+	public List<TaskResponseDTO> sortAllTasksByDeadline(SortDirection sortDirection) {
+		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByDeadline(repository.findAll(), sortDirection));
 	}
 }

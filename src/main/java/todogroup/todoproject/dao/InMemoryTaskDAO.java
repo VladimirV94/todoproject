@@ -13,34 +13,35 @@ import java.util.Optional;
 @Repository
 public class InMemoryTaskDAO {
 	private final List<Task> tasks = new ArrayList<>(Arrays.asList(
-		Task.builder()
-			.id(1)
-			.name("name1")
-			.description("description1")
-			.status(TaskStatus.TODO)
-			.deadline(LocalDate.now().plusDays(2))
-			.build(),
-		Task.builder()
-			.id(2)
-			.name("name2")
-			.description("description2")
-			.status(TaskStatus.DONE)
-			.deadline(LocalDate.now().plusDays(4))
-			.build(),
-		Task.builder()
-			.id(3)
-			.name("name3")
-			.description("description3")
-			.status(TaskStatus.INPROGRESS)
-			.deadline(LocalDate.now().plusDays(6))
-			.build(),
-		Task.builder()
-			.id(4)
-			.name("база")
-			.description("базуз")
-			.status(TaskStatus.TODO)
-			.deadline(LocalDate.now().plusDays(1))
-			.build()));
+			Task.builder()
+					.id(1)
+					.name("name1")
+					.description("description1")
+					.status(TaskStatus.TODO)
+					.deadline(LocalDate.now().plusDays(2))
+					.build(),
+			Task.builder()
+					.id(2)
+					.name("name2")
+					.description("description2")
+					.status(TaskStatus.DONE)
+					.deadline(LocalDate.now().plusDays(4))
+					.build(),
+			Task.builder()
+					.id(3)
+					.name("name3")
+					.description("description3")
+					.status(TaskStatus.INPROGRESS)
+					.deadline(LocalDate.now().plusDays(6))
+					.build(),
+			Task.builder()
+					.id(4)
+					.name("база")
+					.description("базуз")
+					.status(TaskStatus.TODO)
+					.deadline(LocalDate.now().plusDays(1))
+					.build()
+		));
 
 	public List<Task> findAllTasks() {
 		return new ArrayList<>(tasks);
@@ -67,7 +68,7 @@ public class InMemoryTaskDAO {
 	}
 
 	public void deleteTaskById(int id) {
-		Optional<Task> task_to_delete = tasks.stream()
+		var task_to_delete = tasks.stream()
 			.filter(task -> task.getId() == id)
 			.findFirst();
 		if(task_to_delete.isPresent()) {

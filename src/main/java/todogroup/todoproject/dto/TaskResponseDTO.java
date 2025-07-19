@@ -1,24 +1,21 @@
-package todogroup.todoproject.entity.dto;
+package todogroup.todoproject.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import todogroup.todoproject.entity.Task;
 import todogroup.todoproject.entity.TaskStatus;
 
 import java.time.LocalDate;
 
-
+@Builder
 @Getter
 @AllArgsConstructor
-public class TaskDTO {
-
+@NoArgsConstructor
+public class TaskResponseDTO {
 	private String name;
 	private String description;
 	private TaskStatus status;
 	private LocalDate deadline;
-
-	public static TaskDTO toDTO(Task task){
-
-		return new TaskDTO(task.getName(), task.getDescription(), task.getStatus(), task.getDeadline());
-	}
 }
