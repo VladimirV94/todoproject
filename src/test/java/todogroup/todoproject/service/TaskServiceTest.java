@@ -28,6 +28,8 @@ class TaskServiceTest {
 
 	@Mock
 	private TaskRepository taskRepository;
+	@Mock
+	private TaskMapper taskMapper;
 
 	@InjectMocks
 	private TaskService taskService;
@@ -37,6 +39,7 @@ class TaskServiceTest {
 		final Task task = Mockito.mock(Task.class);
 		final TaskResponseDTO responseTaskDTO = Mockito.mock(TaskResponseDTO.class);
 		Mockito.when(taskRepository.findAll()).thenReturn(List.of(task));
+		Mockito.when(taskMapper.toDTO(List.of(task))).thenReturn(List.of(responseTaskDTO));
 
 		List<TaskResponseDTO> result = taskService.findAllTasks();
 
@@ -51,6 +54,7 @@ class TaskServiceTest {
 		final Task task = Mockito.mock(Task.class);
 		final TaskResponseDTO responseTaskDTO = Mockito.mock(TaskResponseDTO.class);
 		Mockito.when(taskRepository.findById(ID)).thenReturn(Optional.of(task));
+		Mockito.when(taskMapper.toDTO(Optional.of(task))).thenReturn(Optional.of(responseTaskDTO));
 
 		Optional<TaskResponseDTO> result = taskService.findTaskById(ID);
 
@@ -65,6 +69,7 @@ class TaskServiceTest {
 		final Task task = Mockito.mock(Task.class);
 		final TaskResponseDTO responseTaskDTO = Mockito.mock(TaskResponseDTO.class);
 		Mockito.when(taskRepository.save(task)).thenReturn(task);
+		Mockito.when(taskMapper.toDTO(task)).thenReturn(Optional.of(responseTaskDTO));
 
 		Optional<TaskResponseDTO> result = taskService.updateTask(task);
 
@@ -79,6 +84,7 @@ class TaskServiceTest {
 		final Task task = Mockito.mock(Task.class);
 		final TaskResponseDTO responseTaskDTO = Mockito.mock(TaskResponseDTO.class);
 		Mockito.when(taskRepository.save(task)).thenReturn(task);
+		Mockito.when(taskMapper.toDTO(task)).thenReturn(Optional.of(responseTaskDTO));
 
 		Optional<TaskResponseDTO> result = taskService.updateTask(task);
 
@@ -101,6 +107,7 @@ class TaskServiceTest {
 		final TaskResponseDTO responseTaskDTO = Mockito.mock(TaskResponseDTO.class);
 		Mockito.when(task.getStatus()).thenReturn(TaskStatus.TODO);
 		Mockito.when(taskRepository.findAll()).thenReturn(List.of(task));
+		Mockito.when(taskMapper.toDTO(List.of(task))).thenReturn(List.of(responseTaskDTO));
 
 		List<TaskResponseDTO> result = taskService.findTasksByStatus(TaskStatus.TODO);
 
@@ -115,13 +122,16 @@ class TaskServiceTest {
 		final Task task1 = Mockito.mock(Task.class);
 		final Task task2 = Mockito.mock(Task.class);
 		final Task task3 = Mockito.mock(Task.class);
-		Mockito.when(task1.getStatus()).thenReturn(TaskStatus.TODO);
-		Mockito.when(task2.getStatus()).thenReturn(TaskStatus.INPROGRESS);
-		Mockito.when(task3.getStatus()).thenReturn(TaskStatus.DONE);
-		Mockito.when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2, task3));
+		final List<Task> tasks = Arrays.asList(task1, task2, task3);
 		final TaskResponseDTO responseTaskDTO1 = Mockito.mock(TaskResponseDTO.class);
 		final TaskResponseDTO responseTaskDTO2 = Mockito.mock(TaskResponseDTO.class);
 		final TaskResponseDTO responseTaskDTO3 = Mockito.mock(TaskResponseDTO.class);
+		final List<TaskResponseDTO> tasksDTO = Arrays.asList(responseTaskDTO1, responseTaskDTO2, responseTaskDTO3);
+		Mockito.when(task1.getStatus()).thenReturn(TaskStatus.TODO);
+		Mockito.when(task2.getStatus()).thenReturn(TaskStatus.INPROGRESS);
+		Mockito.when(task3.getStatus()).thenReturn(TaskStatus.DONE);
+		Mockito.when(taskRepository.findAll()).thenReturn(tasks);
+		Mockito.when(taskMapper.toDTO(tasks)).thenReturn(tasksDTO);
 
 		List<TaskResponseDTO> directResult = taskService.sortAllTasksByStatus(SortDirection.DIRECT);
 
@@ -138,13 +148,16 @@ class TaskServiceTest {
 		final Task task1 = Mockito.mock(Task.class);
 		final Task task2 = Mockito.mock(Task.class);
 		final Task task3 = Mockito.mock(Task.class);
-		Mockito.when(task1.getStatus()).thenReturn(TaskStatus.TODO);
-		Mockito.when(task2.getStatus()).thenReturn(TaskStatus.INPROGRESS);
-		Mockito.when(task3.getStatus()).thenReturn(TaskStatus.DONE);
-		Mockito.when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2, task3));
+		final List<Task> tasks = Arrays.asList(task1, task2, task3);
 		final TaskResponseDTO responseTaskDTO1 = Mockito.mock(TaskResponseDTO.class);
 		final TaskResponseDTO responseTaskDTO2 = Mockito.mock(TaskResponseDTO.class);
 		final TaskResponseDTO responseTaskDTO3 = Mockito.mock(TaskResponseDTO.class);
+		final List<TaskResponseDTO> tasksDTO = Arrays.asList(responseTaskDTO1, responseTaskDTO2, responseTaskDTO3);
+		Mockito.when(task1.getStatus()).thenReturn(TaskStatus.TODO);
+		Mockito.when(task2.getStatus()).thenReturn(TaskStatus.INPROGRESS);
+		Mockito.when(task3.getStatus()).thenReturn(TaskStatus.DONE);
+		Mockito.when(taskRepository.findAll()).thenReturn(tasks);
+		Mockito.when(taskMapper.toDTO(tasks)).thenReturn(tasksDTO);
 
 		List<TaskResponseDTO> reverseResult = taskService.sortAllTasksByStatus(SortDirection.REVERSE);
 
@@ -160,11 +173,14 @@ class TaskServiceTest {
 	void sortAllTasksByDeadline_shouldSortDirect() {
 		final Task task1 = Mockito.mock(Task.class);
 		final Task task2 = Mockito.mock(Task.class);
-		Mockito.when(task1.getDeadline()).thenReturn(LocalDate.now().plusDays(1));
-		Mockito.when(task2.getDeadline()).thenReturn(LocalDate.now().plusDays(2));
-		Mockito.when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2));
+		final List<Task> tasks = Arrays.asList(task1, task2);
 		final TaskResponseDTO responseTaskDTO1 = Mockito.mock(TaskResponseDTO.class);
 		final TaskResponseDTO responseTaskDTO2 = Mockito.mock(TaskResponseDTO.class);
+		final List<TaskResponseDTO> tasksDTO = Arrays.asList(responseTaskDTO1, responseTaskDTO2);
+		Mockito.when(task1.getDeadline()).thenReturn(LocalDate.now().plusDays(1));
+		Mockito.when(task2.getDeadline()).thenReturn(LocalDate.now().plusDays(2));
+		Mockito.when(taskRepository.findAll()).thenReturn(tasks);
+		Mockito.when(taskMapper.toDTO(tasks)).thenReturn(tasksDTO);
 
 		List<TaskResponseDTO> directResult = taskService.sortAllTasksByDeadline(SortDirection.DIRECT);
 
@@ -179,11 +195,14 @@ class TaskServiceTest {
 	void sortAllTasksByDeadline_shouldSortReverse() {
 		final Task task1 = Mockito.mock(Task.class);
 		final Task task2 = Mockito.mock(Task.class);
-		Mockito.when(task1.getDeadline()).thenReturn(LocalDate.now().plusDays(1));
-		Mockito.when(task2.getDeadline()).thenReturn(LocalDate.now().plusDays(2));
-		Mockito.when(taskRepository.findAll()).thenReturn(Arrays.asList(task1, task2));
+		final List<Task> tasks = Arrays.asList(task1, task2);
 		final TaskResponseDTO responseTaskDTO1 = Mockito.mock(TaskResponseDTO.class);
 		final TaskResponseDTO responseTaskDTO2 = Mockito.mock(TaskResponseDTO.class);
+		final List<TaskResponseDTO> tasksDTO = Arrays.asList(responseTaskDTO1, responseTaskDTO2);
+		Mockito.when(task1.getDeadline()).thenReturn(LocalDate.now().plusDays(1));
+		Mockito.when(task2.getDeadline()).thenReturn(LocalDate.now().plusDays(2));
+		Mockito.when(taskRepository.findAll()).thenReturn(tasks);
+		Mockito.when(taskMapper.toDTO(tasks)).thenReturn(tasksDTO);
 
 		List<TaskResponseDTO> reverseResult = taskService.sortAllTasksByDeadline(SortDirection.REVERSE);
 

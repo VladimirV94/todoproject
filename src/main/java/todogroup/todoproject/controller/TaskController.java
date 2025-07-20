@@ -19,12 +19,13 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @RestController
-@RequestMapping("/api/v1/taskTasks")
+@RequestMapping("/api/v1/todoTasks")
 @AllArgsConstructor
 @Validated
 public class TaskController {
 
 	private TaskService taskService;
+	private TaskMapper taskMapper;
 
 	@GetMapping
 	public List<TaskResponseDTO> findAllTasks() {
@@ -36,17 +37,17 @@ public class TaskController {
 		return taskService.findTaskById(id);
 	}
 
-	@PutMapping("change_task")
+	@PutMapping
 	public Optional<TaskResponseDTO> updateTask(@RequestBody @Validated TaskRequestDTO taskDTO) {
-		return taskService.updateTask(TaskMapper.INSTANCE.fromDTO(taskDTO));
+		return taskService.updateTask(taskMapper.fromDTO(taskDTO));
 	}
 
-	@PostMapping("change_task")
+	@PostMapping
 	public Optional<TaskResponseDTO> saveTask(@RequestBody @Validated TaskRequestDTO taskDTO) {
-		return taskService.saveTask(TaskMapper.INSTANCE.fromDTO(taskDTO));
+		return taskService.saveTask(taskMapper.fromDTO(taskDTO));
 	}
 
-	@DeleteMapping("change_task/{id}")
+	@DeleteMapping("/{id}")
 	public void deleteTask(@PathVariable Integer id) {
 		taskService.deleteTaskById(id);
 	}

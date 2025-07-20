@@ -1,7 +1,7 @@
 package todogroup.todoproject.dto;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 import todogroup.todoproject.entity.Task;
 
 import java.util.Collections;
@@ -10,8 +10,6 @@ import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface TaskMapper {
-
-	TaskMapper INSTANCE = Mappers.getMapper(TaskMapper.class);
 
 	/**
 	 * Использование только внутри {@link TaskMapper}

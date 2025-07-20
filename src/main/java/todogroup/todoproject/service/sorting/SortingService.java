@@ -1,10 +1,13 @@
 package todogroup.todoproject.service.sorting;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import todogroup.todoproject.entity.Task;
 
 import java.util.Comparator;
 import java.util.List;
 
+@Component
 public class SortingService {
 
 	private SortingService() {}

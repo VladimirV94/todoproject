@@ -23,26 +23,28 @@ import java.util.stream.Collectors;
 public class TaskService implements ITaskService {
 
 	private TaskRepository repository;
+	private TaskMapper taskMapper;
+	private SortingService sortingService;
 
 	public List<TaskResponseDTO> findAllTasks() {
-		return  TaskMapper.INSTANCE.toDTO(repository.findAll());
+		return taskMapper.toDTO(repository.findAll());
 	}
 
 	@Override
 	public Optional<TaskResponseDTO> findTaskById(int id) {
-		return TaskMapper.INSTANCE.toDTO(repository.findById(id));
+		return taskMapper.toDTO(repository.findById(id));
 	}
 
 	@Override
 	@Transactional
 	public Optional<TaskResponseDTO> updateTask(Task task) {
-		return TaskMapper.INSTANCE.toDTO(repository.save(task));
+		return taskMapper.toDTO(repository.save(task));
 	}
 
 	@Override
 	@Transactional
 	public Optional<TaskResponseDTO> saveTask(Task task) {
-		return TaskMapper.INSTANCE.toDTO(repository.save(task));
+		return taskMapper.toDTO(repository.save(task));
 	}
 
 	@Override
@@ -53,7 +55,7 @@ public class TaskService implements ITaskService {
 
 	@Override
 	public List<TaskResponseDTO> findTasksByStatus(TaskStatus status) {
-		return TaskMapper.INSTANCE.toDTO(repository.findAll().stream()
+		return taskMapper.toDTO(repository.findAll().stream()
 				.filter(task -> status == task.getStatus())
 				.toList());
 	}
@@ -61,22 +63,22 @@ public class TaskService implements ITaskService {
 //	@Override
 //	public List<TaskResponseDTO> sortTasksByStatus(Collection<Integer> tasksId, SortDirection sortDirection) {
 //		var tasks = repository.findAllById(tasksId);
-//		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByStatus(tasks, sortDirection));
+//		return taskMapper.toDTO(sortingService.sortTasksByStatus(tasks, sortDirection));
 //	}
 //
 //	@Override
 //	public List<TaskResponseDTO> sortTasksByDeadline(Collection<Integer> tasksId, SortDirection sortDirection) {
 //		var tasks = repository.findAllById(tasksId);
-//		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByDeadline(tasks, sortDirection));
+//		return taskMapper.toDTO(sortingService.sortTasksByDeadline(tasks, sortDirection));
 //	}
 
 	@Override
 	public List<TaskResponseDTO> sortAllTasksByStatus(SortDirection sortDirection) {
-		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByStatus(repository.findAll(), sortDirection));
+		return taskMapper.toDTO(sortingService.sortTasksByStatus(repository.findAll(), sortDirection));
 	}
 
 	@Override
 	public List<TaskResponseDTO> sortAllTasksByDeadline(SortDirection sortDirection) {
-		return TaskMapper.INSTANCE.toDTO(SortingService.sortTasksByDeadline(repository.findAll(), sortDirection));
+		return taskMapper.toDTO(sortingService.sortTasksByDeadline(repository.findAll(), sortDirection));
 	}
 }
